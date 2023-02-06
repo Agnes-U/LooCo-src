@@ -1,0 +1,1 @@
+["requests.api.get", "requests.adapters.HTTPAdapter.__init__", "requests.sessions.Session.__init__"]

@@ -1,0 +1,9 @@
+{"requests": 
+	{
+	"2.25.1": "../libraries/requests/requests-2.25.1/requests", 
+	"2.26.0": "../libraries/requests/requests-2.26.0/requests", 
+	"2.27.0": "../libraries/requests/requests-2.27.0/requests", 
+	"2.27.1": "../libraries/requests/requests-2.27.1/requests", 
+	"2.28.0": "../libraries/requests/requests-2.28.0/requests"
+	}
+}

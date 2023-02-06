@@ -1,0 +1,1 @@
+{"urllib3": ["urllib3.util.retry.Retry", "urllib3.util.retry.Retry.from_int", "urllib3.poolmanager.PoolManager"], "<builtin>": ["<builtin>.super", "<builtin>.len", "<builtin>.hasattr", "<builtin>.set", "<builtin>.TypeError", "<builtin>.list", "<builtin>.bool"], "collections": ["collections.OrderedDict", "collections.OrderedDict.pop"]}
