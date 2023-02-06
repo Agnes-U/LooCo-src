@@ -318,6 +318,9 @@ if __name__ == '__main__':
         if v!=base_version and v not in expend_versions:
             risky.append(v)
 
-    print("base version: ", base_version)
-    print("safe new versions:", ", ".join(expend_versions))
-    print("risky new versions:", ", ".join(risky))
+    if expend_versions == ["-"]:
+        print("suggest to remove")
+    else:
+        print("base version: ", base_version)
+        print("safe new versions:", ", ".join(expend_versions))
+        print("risky new versions:", ", ".join(risky))
