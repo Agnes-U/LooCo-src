@@ -896,7 +896,7 @@ def get_file_scope_assigns(lines):
         if type(element.value) not in  [ast.Call, ast.Name, ast.Attribute]:
             return []
         if type(element.value) == ast.Call:
-            right = get_call_from_func_element(element.value.func)  # Call对象
+            right = get_call_from_func_element(element.value.func) 
         elif type(element.value) == ast.Name:
             right = element.value.id
         else:

@@ -10,17 +10,17 @@ def to_skip_line(line):
     https_idx = line.find(r"https:")
     http_idx = line.find(r"http:")
     fenhao_idx = line.find(r";")
-    jinghao_idx = line.find(r"#")
+    pound_idx = line.find(r"#")
     if https_idx != -1 or http_idx != -1 or fenhao_idx != -1:
-        if jinghao_idx == -1 or jinghao_idx > max(https_idx, http_idx, fenhao_idx):
+        if pound_idx == -1 or pound_idx > max(https_idx, http_idx, fenhao_idx):
             return True
     return False
 
 
 def delete_whitespace_and_comments(line):
-    jinghao_idx = line.find(r"#")
-    if jinghao_idx != -1:
-        line = line[:jinghao_idx]
+    pound_idx = line.find(r"#")
+    if pound_idx != -1:
+        line = line[:pound_idx]
     line = line.replace(' ', '')
     return line
 
