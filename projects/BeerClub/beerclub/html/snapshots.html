@@ -1,0 +1,71 @@
+{# Snapshots page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Snapshots{% end %}
+
+{% block body_title %}Snapshots{% end %}
+
+{% block content %}
+<div class="row mt-4">
+  <div class="col-md">
+    <table class="table table-sm" id="snapshots">
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">
+            Beer Club balance ({{ settings['CURRENCY'] }})</th>
+          <th scope="col">
+            Members balance ({{ settings['CURRENCY'] }})</th>
+          <th scope="col">
+            Surplus ({{ settings['CURRENCY'] }})</th>
+          {% for status in constants.STATUSES %}
+          <th scope="col"># {{ status }}</th>
+          {% end %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for snapshot in snapshots %}
+        <tr>
+          <td>{{ snapshot['date'] }}</td>
+          <td>{% module Money(snapshot['beerclub_balance'], currency=False) %}</td>
+          <td>{% module Money(snapshot['members_balance'], currency=False) %}</td>
+          <td>{% module Money(snapshot['beerclub_balance'] - snapshot['members_balance'], currency=False) %}</td>
+          {% for status in constants.STATUSES %}
+          <td>{{ snapshot['member_counts'][status] }}</td>
+          {% end %}
+        </tr>
+        {% end %} {# for snapshot in snapshots #}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% set action_url = reverse_url('snapshots') %}
+{% include 'from_to_selection.html' %}
+
+{% end %} {# block content #}
+
+{% block actions %}
+<div class="md-2">
+  <form action="{{ reverse_url('snapshots_csv') }}"
+        role="form"
+        method="GET">
+    <input type="hidden" name="from" value="{{ from_ }}">
+    <input type="hidden" name="to" value="{{ to }}">
+    <button type="submit" class="btn btn-dark btn my-1">CSV file</button>
+  </form>
+</div>
+{% end %}
+
+{% block javascript %}
+<script>
+  $(function() {
+    $("#snapshots").DataTable( {
+      "pagingType": "full_numbers",
+      "pageLength": 25,
+      "order": [[ 0, "desc"]],
+    });
+  });
+</script>
+{% end %} {# block javascript #}

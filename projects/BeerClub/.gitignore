@@ -1,0 +1,7 @@
+.DS_Store
+*.json
+!*template_settings.json
+*.csv
+*.pyc
+*~
+.project

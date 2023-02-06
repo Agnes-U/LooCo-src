@@ -1,0 +1,60 @@
+{# Page for members having made credit-affecting purchases recently. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Active members{% end %}
+
+{% block body_title %}
+Active members
+<small>in the last {{ settings['DISPLAY_ACTIVITY_DAYS'] }} days</small>
+{% end %}
+
+{% block content %}
+<div class="row my-4">
+  <div class="col-md">
+    <table id="members" class="table table-sm">
+      <thead>
+        <th scope="col"></th>
+        <th scope="col">Member</th>
+        <th scope="col">First name</th>
+        <th scope="col">Last name</th>
+        <th scope="col">Balance ({{ settings['CURRENCY'] }})</th>
+        <th scope="col">Activity</th>
+      </thead>
+      <tbody>
+        {% for member in members %}
+        <tr>
+          <td>
+            <a href="{{ reverse_url('payment', member['email']) }}">
+              <span class="badge badge-warning">Payment</span>
+            </a>
+          </td>
+          <td>
+            <a href="{{ reverse_url('account', member['email']) }}">
+              {{ member['email'] }}</a>
+          </td>
+          <td>{{ member['first_name'] }}</td>
+          <td>{{ member['last_name'] }}</td>
+          <td>{% module Money(member['balance'], currency=False) %}</td>
+          <td>
+            <span class="localtime small">{{ member['activity'] }}</span>
+          </td>
+        </tr>
+        {% end %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% end %} {# block content #}
+
+{% block javascript %}
+<script>
+  $(function() {
+    $("#members").DataTable( {
+      "pagingType": "full_numbers",
+      "pageLength": 25,
+      "order": [[ 5, "desc"]],
+    });
+  });
+</script>
+{% end %} {# block javascript #}

@@ -1,1 +1,1 @@
-["requests.api.post", "requests.api.get", "requests.models.Response.__init__", "requests.models.Response.ok"]
+["requests.sessions.Session.__init__", "requests.adapters.HTTPAdapter.__init__", "requests.api.get"]

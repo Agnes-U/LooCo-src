@@ -1,0 +1,91 @@
+{# Home page when logged in; purchase actions. #}
+
+{% extends 'home_base.html' %}
+
+{% block head_title %}{{ settings['SITE_NAME'] }}{% end %}
+
+{% block body_title %}{{ current_user['email'] }}{% end %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md">
+    Current balance: {% module Money(current_user['balance'], padding=0) %}
+  </div>
+  <div class="col-md">
+    <strong>{{ current_user['count'] }}</strong> beverages purchased today.
+  </div>
+  {% if not settings['GLOBAL_SWISH_LAZY'] %}
+  {% if settings['MEMBER_SWISH'] %}
+  <div class="col-md">
+    {% if current_user.get('swish_lazy') %}
+    Your <strong>Swish lazy</strong> mode is ON: Just pay by Swish.
+    Do not record the purchase here.
+    {% else %}
+    Your <strong>Swish lazy</strong> mode is OFF:
+    Each purchase must be recorded!
+    {% end %}
+  </div>
+  {% end %} {# if settings['MEMBER_SWISH'] #}
+  {% end %} {# if not settings['GLOBAL_SWISH_LAZY'] #}
+</div>
+{% for beverage in settings['BEVERAGE'] %}
+<div class="card mt-3 bg-light">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md">
+        <h6>I am buying one {{ beverage['label'] }}...</h6>
+        <p>Price: {% module Money(beverage['price'], padding=0) %}</p>
+      </div>
+      <div class="col-md">
+        {% for purchase in settings['PURCHASE'] %}
+        {% set modid = beverage['identifier'] + '_' + purchase['identifier'] %}
+        <div class="mb-3">
+          <button type="button"
+                  class="btn btn-{{ purchase['style'] }} w-100 shadow"
+                  data-toggle="modal" data-target="#{{ modid }}Modal">
+            {{ purchase['action'] }}
+          </button>
+          <div class="modal fade" id="{{ modid }}Modal"
+               tabindex="-1" role="dialog"
+               aria-labelledby="{{ modid }}Label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form action="{{ reverse_url('purchase') }}"
+                      role="form"
+                      method="POST">
+                  {% module xsrf_form_html() %}
+                  <input type="hidden" name="beverage" 
+                         value="{{ beverage['identifier']}}">
+                  <input type="hidden" name="purchase"
+                         value="{{ purchase['identifier'] }}">
+                  <div class="modal-body">
+                    <h6 id="{{ modid }}Label">
+                      {% raw purchase['description'] % beverage['label'] %}
+                    </h6>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% end %}
+      </div>
+    </div>
+  </div>
+</div>
+{% end %}
+{% end %} {# block content #}
+
+{% block footer_payment %}
+<h4>How to pay</h4>
+{% if settings['PAYMENT_INFO_HTML'] %}
+{% raw settings['PAYMENT_INFO_HTML'] %}
+{% else %}
+<i>No payment information available.</i>
+{% end %}
+{% end %} {# block footer_payment #}

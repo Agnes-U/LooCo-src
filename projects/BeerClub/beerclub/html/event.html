@@ -1,0 +1,76 @@
+{# Event page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Event {{ event['_id'] }}{% end %}
+
+{% block body_title %}Event {{ event['_id'] }}{% end %}
+
+{% block content %}
+<table class="table mt-4">
+  <tbody>
+    <tr>
+      <th scope="row">Member</th>
+      <td>
+        {% if event['member'] == constants.BEERCLUB %}
+        {{ event['member'] }}
+        {% else %}
+        <a href="{{ reverse_url('account', event['member']) }}">
+          {{ event['member'] }}</a>
+        {% end %}
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Event</th>
+      <td>{{ event['action'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Credit</th>
+      <td>{% module Money(event['credit'], padding=0) %}</td>
+    </tr>
+    <tr>
+      <th scope="row">Date</th>
+      <td>{{ event.get('date') or '-' }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Beverage</th>
+      <td>{{ event.get('beverage') or '-' }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Description</th>
+      <td>{{ event.get('description') or '-' }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Actor</th>
+      <td>{{ event['log'].get('member') or '-' }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Timestamp</th>
+      <td class="localtime">{{ event['log']['timestamp'] }}</td>
+    </tr>
+    <tr>
+      <th scope="row">User agent</th>
+      <td>{{ event['log'].get('user_agent') or '-' }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Remote IP</th>
+      <td>{{ event['log'].get('remote_ip') or '-' }}</td>
+    </tr>
+  </tbody>
+</table>
+{% if is_admin %}
+<div class="row mt-4">
+  <div class="col-md-2">
+    <form action="{{ reverse_url('event', event['_id']) }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <input type="hidden" name="_http_method" value="DELETE">
+      <button type="submit" class="btn btn-danger w-100"
+              onclick="return confirm('Really delete this event?');">
+        Delete</button>
+    </form>
+  </div>
+</div>
+{% end %}
+{% end %} {# block content #}

@@ -321,6 +321,11 @@ if __name__ == '__main__':
     if expend_versions == ["-"]:
         print("suggest to remove")
     else:
-        print("base version: ", base_version)
-        print("safe new versions:", ", ".join(expend_versions))
-        print("risky new versions:", ", ".join(risky))
+        if len(sys.argv)>=5:
+            if new_version not in expend_versions:
+                print("risky to loosen to", new_version)
+            else:
+                print("safe to loosen to", new_version)
+        else:
+            print("safe new versions:", ", ".join(expend_versions))
+            print("risky new versions:", ", ".join(risky))

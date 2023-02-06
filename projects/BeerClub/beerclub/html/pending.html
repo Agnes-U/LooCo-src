@@ -1,0 +1,78 @@
+{# Pending members page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Pending members{% end %}
+
+{% block body_title %}Pending members{% end %}
+
+{% block content %}
+<div class="row my-4">
+  <div class="col-md">
+    <table id="members" class="table table-sm">
+      <thead>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col">Member</th>
+        <th scope="col">First name</th>
+        <th scope="col">Last name</th>
+        {% if settings['MEMBER_SWISH'] %}
+        <th scope="col">Swish</th>
+        {% end %}
+        {% if settings['MEMBER_ADDRESS'] %}
+        <th scope="col">Address</th>
+        {% end %}
+      </thead>
+      <tbody>
+        {% for member in members %}
+        <tr>
+          <td>
+            <form action="{{ reverse_url('enable', member['email']) }}"
+                  role="form"
+                  method="POST">
+              {% module xsrf_form_html() %}
+              <input type="hidden"
+                     name="next" value="{{ reverse_url('pending') }}">
+              <button type="submit" class="btn btn-success btn-sm">Enable</button>
+            </form>
+          </td>
+          <td>
+            <form action="{{ reverse_url('disable', member['email']) }}"
+                  role="form"
+                  method="POST">
+              {% module xsrf_form_html() %}
+              <input type="hidden"
+                     name="next" value="{{ reverse_url('pending') }}">
+              <button type="submit" class="btn btn-danger btn-sm">Disable</button>
+            </form>
+          </td>
+          <td>
+            <a href="{{ reverse_url('member', member['email']) }}">
+              {{ member['email'] }}</a>
+          </td>
+          <td>{{ member['first_name'] }}</td>
+          <td>{{ member['last_name'] }}</td>
+          {% if settings['MEMBER_SWISH'] %}
+          <td>{{ member.get('swish') or '-' }}</td>
+          {% end %}
+          {% if settings['MEMBER_ADDRESS'] %}
+          <td>{{ member.get('address') or '-' }}</td>
+          {% end %}
+        </tr>
+        {% end %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% end %} {# block content #}
+
+{% block javascript %}
+<script>
+  $(function() {
+    $("#members").DataTable( {
+      "pagingType": "full_numbers",
+      "order": [[ 3, "asc"]],
+    });
+  });
+</script>
+{% end %} {# block javascript #}

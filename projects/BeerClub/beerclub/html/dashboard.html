@@ -1,0 +1,40 @@
+{# Dashboard page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Dashboard{% end %}
+
+{% block body_title %}Dashboard{% end %}
+
+{% block content %}
+{% include 'balance_row.html' %}
+<div class="row mt-4">
+  <div class="col-md">
+    <div id="balance"></div>
+  </div>
+</div>
+{% include 'from_to_selection.html' %}
+{% end %} {# block content #}
+
+{% block javascript %}
+<script src="https://cdn.jsdelivr.net/npm/vega@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script>
+<script type="text/javascript">
+    var balanceSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v2.0.json",
+      "description": "Development of balance over time.",
+      "title": "Balance over time",
+      "width": 600,
+      "data": {"url": "/balance.csv?from={{ from_ }}&to={{ to }}&new=2",
+               "format": {"type": "csv"}},
+      "mark": "line",
+      "encoding": {
+        "x": {"field": "date", "type": "temporal", "timeUnit": "yearmonthdate"},
+        "y": {"field": "amount", "type": "quantitative"},
+        "color": {"field": "type", "type": "nominal"}
+      }
+    }
+    vegaEmbed("#balance", balanceSpec);
+</script>
+{% end %} {# block javascript #}

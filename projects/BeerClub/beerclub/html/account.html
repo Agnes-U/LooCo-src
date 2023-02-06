@@ -1,0 +1,43 @@
+{# Member account page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Account {{ member['email'] }}{% end %}
+
+{% block body_title %}
+Account <small>
+{% if is_admin %}
+<a href="{{ reverse_url('member', member['email']) }}">{{ member['email'] }}</a>
+{% else %}
+{{ member['email'] }}
+{% end %}
+</small>
+{% end %}
+
+{% block content %}
+<div class="row mb-3">
+  <div class="col-md">
+    Current balance: {% module Money(member['balance'], padding=0) %}
+  </div>
+  <div class="col-md">
+    Purchased <strong>{{ member['count'] }}</strong> beverages today.
+  </div>
+  {% if is_admin %}
+  <div class="col-md">
+    <a href="{{ reverse_url('payment', member['email']) }}"
+       role="button" class="btn btn-warning">Payment</a>
+  </div>
+  <div class="col-md">
+    <a href="{{ reverse_url('purchase_member', member['email']) }}"
+       role="button" class="btn btn-secondary">Purchase</a>
+  </div>
+  {% end %}
+</div>
+
+{% include 'events_list.html' %}
+
+{% end %} {# block content #}
+
+{% block javascript %}
+{% include 'events_list_javascript.html' %}
+{% end %}

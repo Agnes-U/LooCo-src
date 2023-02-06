@@ -1,0 +1,156 @@
+{# Settings; member edit page. #}
+
+{% extends 'base.html' %}
+
+{% block head_title %}Settings {{ member['email'] }}{% end %}
+
+{% block body_title %}Settings <small>{{ member['email'] }}</small>{% end %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-10">
+  </div>
+  <div class="col-md">
+    {% if is_admin %}
+    <a href="{{ reverse_url('member', member['email']) }}"
+       role="button" class="btn btn-secondary w-100">Cancel</a>
+    {% else %}
+    <a href="{{ reverse_url('home') }}"
+       role="button" class="btn btn-secondary w-100">Cancel</a>
+    {% end %}
+  </div>
+</div>
+<div class="card mt-2">
+  <div class="card-body">
+    <form action="{{ reverse_url('settings', member['email']) }}"
+          role="form"
+          method="POST">
+      {% module xsrf_form_html() %}
+      <div class="row form-group">
+        <label for="first_name" class="col-md-2 col-form-label">
+          First name</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" required
+                 name="first_name" id="first_name" aria-describedby="first_nameHelp" 
+                 value="{{ member['first_name'] }}">
+          <small id="first_nameHelp" class="form-text text-muted">
+            Your first name (given name).
+            <strong class="text-danger">Required.</strong>
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label for="last_name" class="col-md-2 col-form-label">
+          Last name</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" required
+                 name="last_name" id="last_name" aria-describedby="last_nameHelp" 
+                 value="{{ member['last_name'] }}">
+          <small id="last_nameHelp" class="form-text text-muted">
+            Your last name (family name).
+            <strong class="text-danger">Required.</strong>
+          </small>
+        </div>
+      </div>
+      {% if settings['MEMBER_SWISH'] %}
+      <div class="row form-group">
+        <label for="swish" class="col-md-2 col-form-label">Swish</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control"
+                 name="swish" id="swish" aria-describedby="swishHelp"
+                 value="{{ member.get('swish') or ''}}">
+          <small id="swishHelp" class="form-text text-muted">
+            Your Swish phone number.
+          </small>
+        </div>
+      </div>
+      <div class="row form-group">
+        <label class="col-md-2 col-form-label">Swish mode</label>
+        <div class="col-md-10">
+          <div class="form-check">
+            <input class="form-check-input" type="radio"
+                   name="swish_lazy" id="swish_lazy_true" 
+                   {{ member.get('swish_lazy') and 'checked' }}
+                   value="true">
+            <label class="form-check-label" for="swish_lazy_true">
+              <strong>Swish lazy</strong> mode.
+              Every Swish payment implies a corresponding
+              purchase. You should not record purchases separately in
+              this app.
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio"
+                   name="swish_lazy" id="swish_lazy_false"
+                   {{ not member.get('swish_lazy') and 'checked' }}
+                   value="false">
+            <label class="form-check-label" for="swish_mode_false">
+              You will always record purchases in this app.  Every
+              Swish payment will go towards reducing your debt.
+            </label>
+          </div>
+          <small id="swishmodeHelp" class="form-text text-muted">
+            The <strong>Swish lazy</strong> mode implies that you
+            cannot reduce your debt by Swish payment.
+          </small>
+        </div>
+      </div>
+      {% end %}
+      {% if settings['MEMBER_ADDRESS'] %}
+      <div class="row form-group">
+        <label for="address" class="col-md-2 col-form-label">Address</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control"
+                 name="address" id="address" aria-describedby="addressHelp"
+                 value="{{ member['address'] or '' }}">
+          <small id="addressHelp" class="form-text text-muted">
+            Your address (floor, building, affiliation, etc).
+          </small>
+        </div>
+      </div>
+      {% end %}
+      {% if is_admin and member['role'] == constants.ADMIN %}
+      <div class="row form-group">
+        <label for="api_key" class="col-md-2 col-form-label">API key</label>
+        <div class="col-md-10">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                   name="api_key" id="api_key"  aria-describedby="api_keyHelp">
+            <label class="form-check-label" for="api_key">
+              Set new API key.
+            </label>
+          </div>
+          <small id="api_keyHelp" class="form-text text-muted">
+            Current: {{ member.get('api_key') or '-' }}
+          </small>
+        </div>
+      </div>
+      {% end %}
+      {% if is_admin and current_user['email'] != member['email'] %}
+      <div class="row form-group">
+        <label for="role" class="col-md-2 col-form-label">Role</label>
+        <div class="col-md-10">
+          {% for role in constants.ROLES %}
+          <div class="form-check">
+            <input class="form-check-input" type="radio"
+                   name="role" id="role_{{ role }}"
+                   {{ role == member['role'] and 'checked' or '' }}
+                    value="{{ role }}">
+            <label class="form-check-label" for="role_{{ role }}">
+              {{ role }}
+            </label>
+          </div>
+          {% end %}
+        </div>
+      </div>
+      {% end %}
+      <div class="row form-group">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+          <button type="submit" class="btn btn-success">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% end %} {# block content #}
