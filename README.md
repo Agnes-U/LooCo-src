@@ -31,9 +31,15 @@ For example,
 
 ```shell
 python main.py TweetTel requests 2.27.1
+# or python main.py TweetTel requests 2.27.1 2.28.0
 
-# or
+python main.py download-tweets-ai-text-gen twint 2.1.4
 
-python main.py TweetTel requests 2.27.1 2.28.0
+python main.py vesta schedule 0.5.0
+
+python main.py django_ecommerce requests 2.25.1
 ```
 
+
+
+*All subjects are open source and can be downloaded according to the commit ID or the version. Due to the large storage (hundreds of GB), they are not placed on this website for now, and we can also share them if necessary in the future.*
